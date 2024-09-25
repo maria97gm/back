@@ -1,4 +1,5 @@
 require('dotenv').config()
+const cors = require('cors')
 const express = require('express')
 const { connectDB } = require('./src/config/db')
 const castingRoutes = require('./src/api/routes/casting')
@@ -7,6 +8,8 @@ const userRoutes = require('./src/api/routes/user')
 
 const app = express()
 app.use(express.json())
+
+app.use(cors())
 
 connectDB()
 connectCloudinary()
