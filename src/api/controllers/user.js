@@ -1,4 +1,5 @@
 const { generateSign } = require('../../config/jwt')
+const Casting = require('../models/casting')
 const User = require('../models/users')
 const bcrypt = require('bcrypt')
 
@@ -51,13 +52,23 @@ const login = async (req, res, next) => {
   }
 }
 
-const updateUserCV = async (req, res) => {
+const deleteUser = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const userDeleted = await User.findByIdAndDelete(id)
+    return res.status(200).json(userDeleted)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const updateUserCV = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { name, age, castings } = req.body
+    const { name, age } = req.body
     const photo = req.file ? req.file.path : null
 
-    const updateData = { name, age, castings }
+    const updateData = { name, age }
 
     if (photo) {
       updateData.photo = photo
@@ -78,9 +89,67 @@ const updateUserCV = async (req, res) => {
   }
 }
 
+const deleteUserCasting = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { castingId } = req.body
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $pull: { castings: castingId } },
+      { new: true }
+    )
+
+    await Casting.updateOne({ _id: castingId }, { $inc: { userCount: -1 } })
+
+    return res.status(200).json(updatedUser)
+  } catch (error) {
+    console.error(error)
+    return res.status(400).json('Error al eliminar el casting', error)
+  }
+}
+
+const updateUserCastings = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { castings } = req.body
+
+    if (!castings || castings.length === 0) {
+      return res
+        .status(400)
+        .json('No se proporcionaron castings para actualizar')
+    }
+
+    const castingsArray = Array.isArray(castings) ? castings : [castings]
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $addToSet: { castings: { $each: castingsArray } } },
+      { new: true }
+    ).populate('castings')
+
+    if (!updatedUser) {
+      return res.status(404).json('Usuario no encontrado')
+    }
+
+    await Casting.updateMany(
+      { _id: { $in: castingsArray } },
+      { $inc: { userCount: 1 } }
+    )
+
+    return res.status(200).json(updatedUser)
+  } catch (error) {
+    console.error(error)
+    return res.status(400).json('Error al actualizar los castings', error)
+  }
+}
+
 module.exports = {
   getUsers,
   login,
   register,
-  updateUserCV
+  deleteUser,
+  deleteUserCasting,
+  updateUserCV,
+  updateUserCastings
 }
