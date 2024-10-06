@@ -14,7 +14,7 @@ userRoutes.post('/register', register)
 userRoutes.get('/', getUsers)
 userRoutes.post('/login', login)
 userRoutes.delete('/:id', deleteUser)
-userRoutes.delete('/:id/castings', deleteUserCasting)
+userRoutes.delete('/:id/:castingId', deleteUserCasting)
 userRoutes.put('/:id/castings', updateUserCastings)
 userRoutes.put('/:id', uploadCV.single('photo'), updateUserCV)
 

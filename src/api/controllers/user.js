@@ -91,21 +91,24 @@ const updateUserCV = async (req, res, next) => {
 
 const deleteUserCasting = async (req, res) => {
   try {
-    const { id } = req.params
-    const { castingId } = req.body
+    const { id, castingId } = req.params
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { $pull: { castings: castingId } },
       { new: true }
     )
+    const updatedCasting = await Casting.findByIdAndUpdate(
+      castingId,
+      { $inc: { userCount: -1 } },
+      { new: true }
+    )
 
-    await Casting.updateOne({ _id: castingId }, { $inc: { userCount: -1 } })
-
-    return res.status(200).json(updatedUser)
+    return res.status(200).json({ updatedUser, updatedCasting })
   } catch (error) {
-    console.error(error)
-    return res.status(400).json('Error al eliminar el casting', error)
+    return res
+      .status(400)
+      .json({ message: 'Error al eliminar el casting', error })
   }
 }
 
