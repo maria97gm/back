@@ -1,4 +1,6 @@
 const { uploadCV } = require('../../middlewares/file')
+const { isAdmin } = require('../../middlewares/isAdmin')
+const { isAuth } = require('../../middlewares/isAuth')
 const {
   getUsers,
   login,
@@ -11,11 +13,11 @@ const {
 
 const userRoutes = require('express').Router()
 userRoutes.post('/register', register)
-userRoutes.get('/', getUsers)
+userRoutes.get('/', [isAuth], getUsers)
 userRoutes.post('/login', login)
-userRoutes.delete('/:id', deleteUser)
+userRoutes.delete('/:id', [isAuth], deleteUser)
 userRoutes.delete('/:id/:castingId', deleteUserCasting)
 userRoutes.put('/:id/castings', updateUserCastings)
-userRoutes.put('/:id', uploadCV.single('photo'), updateUserCV)
+userRoutes.put('/:id', [isAuth], uploadCV.single('photo'), updateUserCV)
 
 module.exports = userRoutes

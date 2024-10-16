@@ -18,7 +18,6 @@ const isAdmin = async (req, res, next) => {
       return res.status(404).json('Usuario no encontrado')
     }
 
-    // Verificar si el usuario es administrador
     if (user.rol && user.rol === 'admin') {
       user.password = null 
       req.user = user 

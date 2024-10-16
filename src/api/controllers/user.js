@@ -12,6 +12,7 @@ const getUsers = async (req, res, next) => {
   }
 }
 
+
 const register = async (req, res, next) => {
   try {
     const userDuplicated = await User.findOne({ userName: req.body.userName })
