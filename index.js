@@ -9,7 +9,7 @@ const userRoutes = require('./src/api/routes/user')
 const app = express()
 app.use(express.json())
 
-app.use(cors())
+app.use(cors());
 
 connectDB()
 connectCloudinary()
