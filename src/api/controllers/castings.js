@@ -18,7 +18,8 @@ const postCasting = async (req, res, next) => {
     const castingSaved = await newCasting.save()
     return res.status(201).json(castingSaved)
   } catch (error) {
-    return res.status(404).json('No hemos podido crear un nuevo casting')
+    console.error('Error al crear casting:', error) // Loggear el error
+    res.status(500).json({ message: 'Error al crear el casting' })
   }
 }
 
