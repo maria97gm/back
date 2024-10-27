@@ -8,12 +8,14 @@ const {
   updateUserCV,
   deleteUser,
   updateUserCastings,
-  deleteUserCasting
+  deleteUserCasting,
+  getUserCastings
 } = require('../controllers/user')
 
 const userRoutes = require('express').Router()
 userRoutes.post('/register', register)
 userRoutes.get('/', [isAuth], getUsers)
+userRoutes.get('/mis-castings', [isAuth], getUserCastings)
 userRoutes.post('/login', login)
 userRoutes.delete('/:id', [isAuth], deleteUser)
 userRoutes.delete('/:id/:castingId', deleteUserCasting)

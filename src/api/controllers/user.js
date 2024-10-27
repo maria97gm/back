@@ -12,6 +12,20 @@ const getUsers = async (req, res, next) => {
   }
 }
 
+const getUserCastings = async (req, res, next) => {
+  try {
+    const userId = req.user._id
+    const user = await User.findById(userId).populate('castings')
+
+    if (!user) {
+      return res.status(404).json('Usuario no encontrado')
+    }
+
+    return res.status(200).json(user.castings)
+  } catch (error) {
+    return res.status(500).json('Error al obtener los castings del usuario')
+  }
+}
 
 const register = async (req, res, next) => {
   try {
@@ -150,6 +164,7 @@ const updateUserCastings = async (req, res, next) => {
 
 module.exports = {
   getUsers,
+  getUserCastings,
   login,
   register,
   deleteUser,
