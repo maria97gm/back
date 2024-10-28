@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 
 const getUsers = async (req, res, next) => {
   try {
+    
     const allUsers = await User.find().populate('castings')
     return res.status(200).json(allUsers)
   } catch (error) {
@@ -21,9 +22,17 @@ const getUserCastings = async (req, res, next) => {
       return res.status(404).json('Usuario no encontrado')
     }
 
-    return res.status(200).json(user.castings)
+    if (user.castings.length === 0) {
+      return res
+        .status(200)
+        .json({ message: 'No tienes castings inscritos', castings: [] })
+    }
+
+    return res.status(200).json({ castings: user.castings })
   } catch (error) {
-    return res.status(500).json('Error al obtener los castings del usuario')
+    return res
+      .status(500)
+      .json({ message: 'Error al obtener los castings del usuario' })
   }
 }
 

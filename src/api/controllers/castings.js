@@ -2,7 +2,7 @@ const Casting = require('../models/casting')
 
 const getCastings = async (req, res, next) => {
   try {
-    const allCastings = await Casting.find()
+    const allCastings = await Casting.find().sort({ performance: 1 }) 
     return res.status(200).json(allCastings)
   } catch (error) {
     return res.status(404).json('No hemos podido acceder a los castings')
