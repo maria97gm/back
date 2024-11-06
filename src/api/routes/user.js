@@ -22,4 +22,8 @@ userRoutes.delete('/:id/:castingId', deleteUserCasting)
 userRoutes.put('/:id/castings', updateUserCastings)
 userRoutes.put('/:id', [isAuth], uploadCV.single('photo'), updateUserCV)
 
+userRoutes.get('/verify-token', [isAuth], (req, res) => {
+  res.status(200).json({ message: 'Token válido' })
+})
+
 module.exports = userRoutes
